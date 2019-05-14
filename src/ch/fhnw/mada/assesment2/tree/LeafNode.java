@@ -18,12 +18,11 @@ public class LeafNode extends BaseNode {
     }
 
     public String getCode() {
-        BaseNode cursor = this;
         var resultBuilder = new StringBuilder();
         resultBuilder.append(getValue());
-        while ((cursor = cursor.getParent()) != null) {
-            if (cursor.getValue() != -1) {
-                resultBuilder.append(cursor.getValue());
+        for (var node : this) {
+            if (node.getValue() != -1) {
+                resultBuilder.append(node.getValue());
             }
         }
         return resultBuilder.reverse().toString();

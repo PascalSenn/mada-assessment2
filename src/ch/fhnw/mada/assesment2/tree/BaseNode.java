@@ -1,6 +1,11 @@
 package ch.fhnw.mada.assesment2.tree;
 
-public class BaseNode {
+import java.util.Iterator;
+
+public class BaseNode implements Iterable<BaseNode> {
+    public static int compareByPriority(BaseNode o1, BaseNode o2) {
+        return (int) (o1.getPriority() - o2.getPriority());
+    }
 
     private double priority;
 
@@ -13,7 +18,7 @@ public class BaseNode {
     }
 
     private int value = -1;
-    private BaseNode  parent;
+    private BaseNode parent;
 
     public BaseNode(double priority) {
         this.priority = priority;
@@ -33,5 +38,25 @@ public class BaseNode {
 
     public void setParent(BaseNode parent) {
         this.parent = parent;
+    }
+
+
+    @Override
+    public Iterator<BaseNode> iterator() {
+        var self = this;
+        return new Iterator<BaseNode>() {
+            private BaseNode current = self;
+
+            @Override
+            public boolean hasNext() {
+                return current.getParent() != null;
+            }
+
+            @Override
+            public BaseNode next() {
+                current = current.getParent();
+                return current;
+            }
+        };
     }
 }

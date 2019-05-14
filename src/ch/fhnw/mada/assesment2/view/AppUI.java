@@ -16,7 +16,7 @@ public class AppUI extends VBox {
     private static final String INTRO_TEMPLATE = "This application uses the folder %s. Make sure this folder exists. All files are stored in this folder.";
     private static final String GENERATE_DESCRIPTION_TEMPLATE = "Creates a huffman table of %s and  stores it under %s";
     private static final String COMPRESS_FILE_TEMPLATE = "Compresses the file %s with the huffman code from  %s and outputs into %s";
-    private static final String DECOMPRESS_FILE_TEMPLATE = "Decompresss the file %s with the huffman code from  %s and outputs into %s";
+    private static final String DECOMPRESS_FILE_TEMPLATE = " Decompress the file %s with the huffman code from  %s and outputs into %s";
     private static final int PADDING_SIDES = 25;
     private Text title;
     private Text intro;
@@ -60,7 +60,7 @@ public class AppUI extends VBox {
     private void initializeControls() {
         titleLayout = new StackPane();
         intro = new Text("");
-        title = new Text("Huffmann Assement");
+        title = new Text("Huffman Assessment");
         widthProperty().addListener((o, old, newValue) -> intro.setWrappingWidth(newValue.doubleValue() - PADDING_SIDES * 2));
         pm.workingDirectoryProperty.addListener((o, old, newValue) -> intro.setText(String.format(INTRO_TEMPLATE, newValue)));
 
@@ -68,7 +68,7 @@ public class AppUI extends VBox {
         widthProperty().addListener((o, old, newValue) -> generateDescription.setWrappingWidth(newValue.doubleValue() < 200 ? 100 : newValue.doubleValue() - 100));
         generateButton = new Button("Generate");
         generateLayout = new GridPane();
-        generateLabel = new Text("Generate Huffamn Table");
+        generateLabel = new Text("Generate Huffman Table");
         generateButton.setOnAction(x -> pm.generateHuffmanCode());
         pm.workingDirectoryProperty.addListener((o, old, newValue) -> generateDescription.setText(String.format(GENERATE_DESCRIPTION_TEMPLATE, pm.getSourceFile(), pm.getHuffamnCodeFilePath())));
 
@@ -83,9 +83,9 @@ public class AppUI extends VBox {
 
         decryptFileDescription = new Text();
         widthProperty().addListener((o, old, newValue) -> decryptFileDescription.setWrappingWidth(newValue.doubleValue() < 200 ? 100 : newValue.doubleValue() - 100));
-        decryptFileButton = new Button("Decrypt");
+        decryptFileButton = new Button("Decompress");
         decryptFileLayout = new GridPane();
-        decryptFileLabel = new Text("Decrypt File");
+        decryptFileLabel = new Text("Decompress File");
         decryptFileButton.setOnAction(x -> pm.decompressFile());
         pm.workingDirectoryProperty.addListener((o, old, newValue) -> decryptFileDescription.setText(String.format(DECOMPRESS_FILE_TEMPLATE, pm.getEncodedFile(), pm.getHuffamnCodeFilePath(), pm.getDecodedFile())));
 

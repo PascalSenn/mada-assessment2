@@ -13,11 +13,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class PresentationModel {
-    public final static String DEFAULT_FOLDER = "C:\\temp";
-    public final static String INPUT_FILE = "input.txt";
-    public final static String HUFFAAN_CODE_STORE = "dec_tab.txt";
-    public final static String ENCODED_FILE = "output.dat";
-    public final static String DECODED_FILE = "decompressed.txt";
+    private final static String DEFAULT_FOLDER = "C:\\temp";
+    private final static String INPUT_FILE = "input.txt";
+    private final static String HUFFMAN_FILE = "dec_tab.txt";
+    private final static String ENCODED_FILE = "output.dat";
+    private final static String DECODED_FILE = "decompressed.txt";
     private final static DateTimeFormatter LOG_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public final StringProperty workingDirectoryProperty = new SimpleStringProperty();
@@ -31,7 +31,7 @@ public class PresentationModel {
     }
 
     public String getHuffamnCodeFilePath() {
-        return workingDirectoryProperty.get() + "\\" + HUFFAAN_CODE_STORE;
+        return workingDirectoryProperty.get() + "\\" + HUFFMAN_FILE;
     }
 
     public String getEncodedFile() {
@@ -49,6 +49,7 @@ public class PresentationModel {
 
     public void generateHuffmanCode() {
         var huffman = new HuffmanBuilder();
+        log("Start generating huffman code", 10);
         try (var inputStream = new BufferedReader(new FileReader(getSourceFile()));
              var outputWriter = new PrintWriter(new BufferedWriter(new FileWriter(getHuffamnCodeFilePath())))) {
             int current;
@@ -56,6 +57,8 @@ public class PresentationModel {
                 huffman.add((char) current);
             }
             outputWriter.println(huffman.build().serializeHuffmanCode());
+
+            log("Generated Huffman code", 100);
         } catch (Exception e) {
 
             log("ERROR - Could not read input file", 0);
@@ -66,12 +69,14 @@ public class PresentationModel {
 
 
     public void decompressFile() {
+        log("Start decompressing file", 10);
         File file = new File(getEncodedFile());
         byte[] bFile = new byte[(int) file.length()];
         try (FileInputStream fis = new FileInputStream(file);
              var outputWriter = new PrintWriter(new BufferedWriter(new FileWriter(getDecodedFile())))) {
             var huffman = getHuffmanFromFile();
             outputWriter.write(huffman.decompressString(fis));
+            log("Successfully decompressed file", 100);
 
         } catch (Exception e) {
 
@@ -82,6 +87,7 @@ public class PresentationModel {
     }
 
     public void compressFile() {
+        log("Start compressing file", 10);
         try (var inputStream = new BufferedReader(new FileReader(getSourceFile()));
              FileOutputStream fos = new FileOutputStream(getEncodedFile());) {
             var huffman = getHuffmanFromFile();
@@ -100,6 +106,7 @@ public class PresentationModel {
             for (var item : bytes) {
                 fos.write(item);
             }
+            log("Successfully compressed file", 100);
 
         } catch (Exception e) {
 
@@ -110,10 +117,10 @@ public class PresentationModel {
     }
 
     private Huffman getHuffmanFromFile() throws IOException {
+        log("Reading huffman code table...", 10);
         try (var inputStream = new BufferedReader(new FileReader(getHuffamnCodeFilePath()));) {
-            var huffman = new Huffman();
-            huffman.deserializeHuffmanCode((inputStream).readLine());
-            return huffman;
+            var huffman = new HuffmanBuilder();
+            return huffman.build((inputStream).readLine());
         } catch (Exception e) {
 
             log("ERROR - Could not decode huffman table", 0);
